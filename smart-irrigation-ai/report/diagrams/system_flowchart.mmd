@@ -1,0 +1,25 @@
+flowchart TD
+    Start([Bắt đầu]) --> Sensors[Cảm biến ESP32 đo:\nNhiệt độ, Độ ẩm đất,\nĐộ ẩm không khí, Ánh sáng]
+    Sensors --> Upload[ESP32 gửi dữ liệu lên ThingSpeak]
+    Upload --> Fetch[Python: fetch_thingspeak_data]
+    Fetch -->|Lỗi API| Simulate[Sinh dữ liệu mô phỏng\ngenerate_simulated_data]
+    Fetch -->|Thành công| Clean
+    Simulate --> Clean[Làm sạch dữ liệu: clean_data]
+    Clean --> Stats[Thống kê mô tả: compute_statistics]
+    Clean --> Charts[Vẽ 7 biểu đồ: generate_all_charts]
+    Clean --> MA[Tính Moving Average]
+    MA --> LR[Huấn luyện Linear Regression]
+    LR --> Forecast[Dự báo độ ẩm đất tương lai]
+    MA --> Drying{Xu hướng giảm\nliên tục?}
+    Forecast --> Decision[Thuật toán quyết định tưới]
+    Drying -->|Có| Decision
+    Decision --> Action{Soil Moisture?}
+    Action -->|"< 40%"| PumpOn[PUMP ON]
+    Action -->|"> 60%"| PumpOff[PUMP OFF]
+    Action -->|"40% - 60%"| Hold[Giữ nguyên trạng thái]
+    Drying -->|Có, dù chưa tới ngưỡng| Warning[Cảnh báo sắp khô]
+    PumpOn --> Report[Ghi log / Cập nhật báo cáo]
+    PumpOff --> Report
+    Hold --> Report
+    Warning --> Report
+    Report --> End([Kết thúc chu kỳ,\nlặp lại sau X phút])

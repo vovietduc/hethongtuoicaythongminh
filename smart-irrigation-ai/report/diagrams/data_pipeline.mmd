@@ -1,0 +1,10 @@
+flowchart LR
+    A[ThingSpeak Cloud] -->|REST API / JSON| B[Python: api.py]
+    B --> C[Data Cleaning: preprocess.py]
+    C --> D[Analysis: analysis.py]
+    D --> E[Visualization: visualization.py]
+    D --> F[Prediction: prediction.py]
+    F --> G[Irrigation Logic: irrigation_logic.py]
+    G -->|Lệnh điều khiển| H[ESP32]
+    H -->|Bật/Tắt| I[Máy bơm nước]
+    H -->|Ghi dữ liệu mới| A

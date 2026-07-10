@@ -1,0 +1,17 @@
+flowchart TD
+    In([Đọc giá trị Soil Moisture hiện tại]) --> Q1{"Soil Moisture < 40%?"}
+    Q1 -->|Đúng| ON[Bật bơm - PUMP ON]
+    Q1 -->|Sai| Q2{"Soil Moisture > 60%?"}
+    Q2 -->|Đúng| OFF[Tắt bơm - PUMP OFF]
+    Q2 -->|Sai| HOLD[Giữ nguyên trạng thái bơm\n vùng an toàn 40%-60%]
+
+    ON --> Q3
+    OFF --> Q3
+    HOLD --> Q3
+
+    Q3{"Moving Average\nđang giảm liên tục?"} -->|Đúng| WARN[Phát cảnh báo:\nĐất sắp khô]
+    Q3 -->|Sai| NoWarn[Không cảnh báo]
+
+    WARN --> Log[Ghi log quyết định + cảnh báo]
+    NoWarn --> Log
+    Log --> Out([Kết thúc chu kỳ ra quyết định])
